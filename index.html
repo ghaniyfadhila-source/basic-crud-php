@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modul CRUD PHP &amp; Tap RFID — PPLG</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-brand">
+            <button type="button" id="btn-toggle-sidebar" class="btn btn-icon" aria-label="Buka daftar bab" aria-expanded="false" aria-controls="app-sidebar">
+                <span class="hamburger-lines" aria-hidden="true"></span>
+                <span class="btn-label-mobile">Daftar Bab</span>
+            </button>
+            <strong class="brand-title">CRUD PHP &amp; Tap RFID</strong>
+        </div>
+
+        <div class="header-progress" aria-label="Progres belajar">
+            <div class="progress-meta">
+                <span class="progress-label">Progres</span>
+                <span id="global-progress-text" class="progress-value">0 / 10 (0%)</span>
+            </div>
+            <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <div id="global-progress-bar" class="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <button type="button" id="btn-open-cheatsheet" class="btn btn-secondary">Contekan</button>
+            <button type="button" id="btn-open-exam" class="btn btn-primary">Simulasi Ujian</button>
+            <button type="button" id="btn-reset-progress" class="btn btn-ghost-danger">Reset</button>
+        </div>
+    </header>
+
+    <div id="reset-confirm-banner" class="reset-banner" role="alert" hidden>
+        <div class="reset-banner-inner">
+            <p class="reset-banner-text">
+                <strong>Reset progres belajar?</strong> Data bab selesai, latihan, dan checklist ujian akan dikosongkan.
+            </p>
+            <div class="reset-banner-actions">
+                <button type="button" id="btn-confirm-reset" class="btn btn-danger">Ya, Reset</button>
+                <button type="button" id="btn-cancel-reset" class="btn btn-secondary">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="sidebar-backdrop" class="sidebar-backdrop" hidden></div>
+
+    <div class="app-shell">
+        <aside id="app-sidebar" class="app-sidebar" aria-label="Daftar bab">
+            <div class="sidebar-head">
+                <h2 class="sidebar-title">Daftar Bab</h2>
+            </div>
+            <nav id="roadmap-nav" class="roadmap-nav"></nav>
+        </aside>
+
+        <main class="workspace-main">
+            <article id="chapter-container" class="chapter-sheet">
+                <header id="chapter-header" class="chapter-header">
+                    <div class="chapter-meta-row">
+                        <span id="chapter-phase-badge" class="phase-badge">Fase 1</span>
+                        <span id="chapter-target-file" class="file-chip">-</span>
+                    </div>
+                    <p id="chapter-skema-ref" class="skema-ref">Skema okupasi</p>
+                    <h1 id="chapter-title" class="chapter-title">Memuat...</h1>
+
+                    <div class="workspace-tabs" role="tablist" aria-label="Bagian bab">
+                        <button type="button" id="btn-tab-materi" class="tab-btn is-active" role="tab" aria-selected="true" aria-controls="tab-materi" data-tab="materi">
+                            1. Materi
+                        </button>
+                        <button type="button" id="btn-tab-simulator" class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-simulator" data-tab="simulator">
+                            2. Simulator
+                        </button>
+                        <button type="button" id="btn-tab-latihan" class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-latihan" data-tab="latihan">
+                            3. Latihan
+                        </button>
+                    </div>
+                </header>
+
+                <section id="tab-materi" class="tab-panel is-active" role="tabpanel" aria-labelledby="btn-tab-materi"></section>
+                <section id="tab-simulator" class="tab-panel" role="tabpanel" aria-labelledby="btn-tab-simulator" hidden></section>
+                <section id="tab-latihan" class="tab-panel" role="tabpanel" aria-labelledby="btn-tab-latihan" hidden></section>
+
+                <footer id="chapter-footer" class="chapter-footer">
+                    <button type="button" id="btn-prev-chapter" class="btn btn-secondary">Sebelumnya</button>
+                    <button type="button" id="btn-toggle-complete" class="btn btn-stamp" aria-pressed="false">Tandai Selesai</button>
+                    <button type="button" id="btn-next-chapter" class="btn btn-primary">Berikutnya</button>
+                </footer>
+            </article>
+        </main>
+    </div>
+
+    <div id="modal-cheatsheet" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="cheatsheet-modal-title" hidden>
+        <div class="modal-dialog modal-cheatsheet-dialog">
+            <div class="modal-header">
+                <div>
+                    <h2 id="cheatsheet-modal-title" class="modal-title">Contekan Rumus</h2>
+                    <p class="modal-subtitle">Ringkasan 10 poin untuk cetak A4.</p>
+                </div>
+                <div class="modal-header-actions">
+                    <button type="button" id="btn-print-cheatsheet" class="btn btn-primary">Cetak</button>
+                    <button type="button" id="btn-close-cheatsheet" class="btn btn-secondary" aria-label="Tutup contekan">Tutup</button>
+                </div>
+            </div>
+            <div class="print-only-header">
+                <h1>Contekan CRUD PHP + MySQL &amp; Tap RFID</h1>
+                <p>10 Poin Skema Okupasi | DB: db_loginCashles (tb_role, tb_user)</p>
+            </div>
+            <div id="cheatsheet-body" class="cheatsheet-grid"></div>
+        </div>
+    </div>
+
+    <div id="modal-exam" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="exam-modal-title" hidden>
+        <div class="modal-dialog modal-exam-dialog">
+            <div class="modal-header">
+                <div>
+                    <h2 id="exam-modal-title" class="modal-title">Simulasi Ujian</h2>
+                    <p class="modal-subtitle">Latihan 10 poin pakai timer.</p>
+                </div>
+                <div class="modal-header-actions">
+                    <button type="button" id="btn-close-exam" class="btn btn-secondary" aria-label="Tutup simulasi ujian">Tutup</button>
+                </div>
+            </div>
+
+            <div class="exam-timer-bar">
+                <div class="exam-timer-left">
+                    <label for="exam-duration-select" class="exam-select-label">Durasi</label>
+                    <select id="exam-duration-select" class="exam-duration-select">
+                        <option value="3600" selected>60 Menit</option>
+                        <option value="5400">90 Menit</option>
+                    </select>
+                </div>
+                <div class="exam-clock-wrap">
+                    <span class="exam-clock-caption">Sisa Waktu</span>
+                    <div id="exam-timer-display" class="exam-timer-display" aria-live="polite">60:00</div>
+                </div>
+                <div class="exam-timer-controls">
+                    <button type="button" id="btn-exam-start" class="btn btn-primary">Mulai</button>
+                    <button type="button" id="btn-exam-pause" class="btn btn-secondary">Jeda</button>
+                    <button type="button" id="btn-exam-reset" class="btn btn-secondary">Reset</button>
+                </div>
+            </div>
+
+            <div class="exam-checklist-meta">
+                <span id="exam-progress-text" class="exam-progress-text">0 / 10 Poin</span>
+            </div>
+
+            <div id="exam-status-banner" class="exam-status-banner" role="status" hidden></div>
+            <div id="exam-checklist-body" class="exam-checklist-body"></div>
+        </div>
+    </div>
+
+    <script src="assets/js/materi-data.js"></script>
+    <script src="assets/js/state.js"></script>
+    <script src="assets/js/simulators.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>
